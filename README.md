@@ -1,4 +1,4 @@
-# Monitoria de Conversão de Energia - Exercícios
+# Monitoria de CONVERSAO ELETROM.ENERGIA I - Exercícios
 
 Este repositório contém meus códigos Python desenvolvidos no Google Colab para a disciplina de Conversão de Energia, com foco na resolução de exercícios do livro do Chapman.
 
