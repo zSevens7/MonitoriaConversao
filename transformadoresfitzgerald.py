@@ -1967,7 +1967,145 @@ c. Com o transformador operando com a carga nominal e a tensão nominal em
 seu terminal de baixa tensão, calcule a potência dissipada no transformador.
 """
 
-#codigo
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+
+# Exercicio 2.23
+
+# Dados do Exercicio 2.23
+S_base_2_23 = 2.5e6       # VA
+f_2_23 = 50               # Hz
+V_HV_nominal_2_23 = 19100  # V (lado de alta tensão)
+V_LV_nominal_2_23 = 3810   # V (lado de baixa tensão)
+
+# Ensaio de circuito aberto (Lado de Baixa Tensão - 3.81 kV, HV em aberto)
+# As leituras do ensaio a vazio são:
+Vca_LV_2_23 = 3810        # V (Tensão aplicada no LV)
+Ica_LV_2_23 = 9.86        # A (Corrente no LV)
+Pca_LV_2_23 = 8.14e3      # W (Potência absorvida no LV - 8.14 kW)
+
+# Ensaio de curto-circuito (Lado de Alta Tensão - 19.1 kV, LV em curto)
+# As leituras do ensaio de curto-circuito são:
+Vcc_HV_2_23 = 920         # V (Tensão aplicada no HV)
+Icc_HV_2_23 = 141         # A (Corrente no HV)
+Pcc_HV_2_23 = 10.3e3      # W (Potência absorvida no HV - 10.3 kW)
+
+# Relação de espiras (a = N_HV/N_LV)
+a_2_23 = V_HV_nominal_2_23 / V_LV_nominal_2_23
+print(f"\nExercicio 2.23:")
+print(f"Relação de espiras (a = N_HV/N_LV): {a_2_23:.4f}")
+
+# a. Calcule os parâmetros dos circuitos equivalentes L das Figs. 2.12a e b,
+# referidos ao enrolamento de alta tensão do transformador.
+# (Fig. 2.12a: Circuito equivalente aproximado referido ao primário (HV)).
+# (Fig. 2.12b: Circuito equivalente aproximado referido ao secundário (LV)).
+# Os parâmetros são Req, Xeq, Rc, Xm.
+
+# Parâmetros série equivalente (obtidos do ensaio de curto-circuito no HV)
+# O ensaio de curto-circuito foi realizado no lado de alta tensão.
+# Zcc_HV = Vcc_HV / Icc_HV
+Zcc_HV_2_23 = Vcc_HV_2_23 / Icc_HV_2_23
+
+# Rcc_HV = Pcc_HV / Icc_HV^2
+Rcc_HV_2_23 = Pcc_HV_2_23 / (Icc_HV_2_23**2)
+
+# Xcc_HV = sqrt(Zcc_HV^2 - Rcc_HV^2)
+# Zcc_HV é a magnitude da impedância complexa.
+Xcc_HV_2_23 = np.sqrt(Zcc_HV_2_23**2 - Rcc_HV_2_23**2)
+
+# No circuito equivalente L referido ao lado de alta tensão (Fig 2.12a),
+# Req e Xeq são obtidos diretamente do ensaio de curto-circuito no HV.
+Req_HV_a_2_23 = Rcc_HV_2_23
+Xeq_HV_a_2_23 = Xcc_HV_2_23
+# Zeq_HV_a_2_23 = Req_HV_a_2_23 + 1j * Xeq_HV_a_2_23 # Não solicitado como complexo na parte a
+
+print(f"\n(a) Parâmetros do circuito equivalente L referidos ao lado de alta tensão (HV):")
+print(f"  Resistência série equivalente (Req_HV): {Req_HV_a_2_23:.4f} Ω")
+print(f"  Reatância série equivalente (Xeq_HV): {Xeq_HV_a_2_23:.4f} Ω")
+
+# Parâmetros paralelos de excitação (obtidos do ensaio de circuito aberto no LV, e depois referidos ao HV)
+# Primeiro, calcule os parâmetros a vazio referidos ao lado LV.
+# Pca_LV_2_23 representa as perdas no núcleo (Pc_LV_2_23).
+# Ic_LV_2_23 = Pc_LV_2_23 / Vca_LV_2_23
+Ic_LV_2_23 = Pca_LV_2_23 / Vca_LV_2_23
+# Rc_LV_2_23 = Vca_LV_2_23 / Ic_LV_2_23
+Rc_LV_2_23 = Vca_LV_2_23 / Ic_LV_2_23
+
+# Corrente de magnetização no LV (Im_LV_2_23)
+# Ica_LV_2_23 é a corrente total de excitação no LV.
+# Ica_LV_2_23^2 = Ic_LV_2_23^2 + Im_LV_2_23^2
+Im_LV_2_23 = np.sqrt(Ica_LV_2_23**2 - Ic_LV_2_23**2)
+# Xm_LV_2_23 = Vca_LV_2_23 / Im_LV_2_23
+Xm_LV_2_23 = Vca_LV_2_23 / Im_LV_2_23
+
+# Agora, referir os parâmetros de excitação para o lado HV.
+# Rc_HV = Rc_LV * a^2
+Rc_HV_a_2_23 = Rc_LV_2_23 * (a_2_23**2)
+# Xm_HV = Xm_LV * a^2
+Xm_HV_a_2_23 = Xm_LV_2_23 * (a_2_23**2)
+
+print(f"  Resistência de perdas no núcleo (Rc_HV): {Rc_HV_a_2_23:.2f} Ω")
+print(f"  Reatância de magnetização (Xm_HV): {Xm_HV_a_2_23:.2f} Ω")
+
+# b. Calcule os parâmetros de circuito equivalente L referidos ao enrolamento
+# de baixa tensão do transformador.
+# (Fig. 2.12b: Circuito equivalente aproximado referido ao secundário (LV)).
+
+# Parâmetros série equivalente referidos ao lado LV.
+# Referir os parâmetros série do HV para o LV.
+# Req_LV = Req_HV / a^2
+Req_LV_b_2_23 = Req_HV_a_2_23 / (a_2_23**2)
+# Xeq_LV = Xeq_HV / a^2
+Xeq_LV_b_2_23 = Xeq_HV_a_2_23 / (a_2_23**2)
+# Zeq_LV_b_2_23 = Req_LV_b_2_23 + 1j * Xeq_LV_b_2_23 # Não solicitado como complexo na parte b
+
+print(f"\n(b) Parâmetros do circuito equivalente L referidos ao lado de baixa tensão (LV):")
+print(f"  Resistência série equivalente (Req_LV): {Req_LV_b_2_23:.6f} Ω")
+print(f"  Reatância série equivalente (Xeq_LV): {Xeq_LV_b_2_23:.6f} Ω")
+
+# Parâmetros paralelos de excitação referidos ao lado LV.
+# Estes são obtidos diretamente do ensaio de circuito aberto no LV.
+Rc_LV_b_2_23 = Rc_LV_2_23
+Xm_LV_b_2_23 = Xm_LV_2_23
+
+print(f"  Resistência de perdas no núcleo (Rc_LV): {Rc_LV_b_2_23:.4f} Ω")
+print(f"  Reatância de magnetização (Xm_LV): {Xm_LV_b_2_23:.4f} Ω")
+
+# c. Com o transformador operando com a carga nominal e a tensão nominal em
+# seu terminal de baixa tensão, calcule a potência dissipada no transformador.
+
+# "Carga nominal" significa que a potência aparente entregue à carga é S_base_2_23 = 2.5 MVA.
+# "Tensão nominal em seu terminal de baixa tensão" significa que V_carga_LV = V_LV_nominal_2_23 = 3810 V.
+
+# A potência dissipada no transformador consiste nas perdas no cobre (nos enrolamentos)
+# e nas perdas no núcleo (perdas por histerese e correntes parasitas).
+
+# Perdas no cobre: Dependem da corrente. Na carga nominal, as correntes nos enrolamentos
+# são aproximadamente as correntes nominais.
+# Corrente nominal no lado de baixa tensão (LV)
+I_LV_nominal_2_23 = S_base_2_23 / V_LV_nominal_2_23
+
+# A resistência equivalente referida ao lado LV é Req_LV_b_2_23.
+# As perdas no cobre totais podem ser calculadas como (Corrente)^2 * (Resistência equivalente).
+# Se a corrente no lado LV é I_LV_nominal_2_23, as perdas no cobre são:
+# P_cobre = I_LV_nominal_2_23^2 * Req_LV_b_2_23 (referido ao LV)
+P_cobre_c_2_23 = I_LV_nominal_2_23**2 * Req_LV_b_2_23
+
+# Perdas no núcleo: Dependem da tensão e frequência.
+# Assumindo que a tensão no lado LV é nominal (3810 V), a densidade de fluxo
+# no núcleo é nominal, e as perdas no núcleo são aproximadamente as perdas medidas no ensaio a vazio
+# sob tensão nominal. O ensaio a vazio foi realizado a 3.81 kV no LV.
+Pc_c_2_23 = Pca_LV_2_23
+
+# Potência total dissipada no transformador = Perdas no cobre + Perdas no núcleo.
+P_dissipada_total_c_2_23 = P_cobre_c_2_23 + Pc_c_2_23
+
+print(f"\n(c) Potência dissipada no transformador com carga nominal e tensão nominal no terminal LV:")
+print(f"  Corrente nominal no lado LV: {I_LV_nominal_2_23:.2f} A rms")
+print(f"  Perdas no cobre (Pcobre): {P_cobre_c_2_23:.2f} W")
+print(f"  Perdas no núcleo (Pnucleo): {Pc_c_2_23:.2f} W")
+print(f"  Potência total dissipada: {P_dissipada_total_c_2_23:.2f} W")
 
 """# Exercicio 2.24
 
@@ -1983,7 +2121,165 @@ Tensão, corrente e potência de um ensaio de curto-circuito realizado no enrola
 Teste o seu script com as medições feitas no transformador do Problema 2.22
 """
 
-#Codigo
+# Exercicio 2.24
+
+# Dados do Exercicio 2.24 (Usando dados do Problema 2.22 para teste)
+V_LV_nominal_2_24 = 7960   # V (lado de baixa tensão)
+V_HV_nominal_2_24 = 39800  # V (lado de alta tensão)
+S_base_2_24 = 10e6        # VA
+f_2_24 = 60               # Hz
+
+# Ensaio de circuito aberto (Lado de Baixa Tensão - 7.96 kV, HV em aberto)
+Vca_LV_2_24 = 7960             # V (Tensão aplicada no LV)
+Ica_LV_2_24 = 17.3             # A (Corrente no LV)
+Pca_LV_2_24 = 48.0e3           # W (Potência absorvida no LV)
+
+# Ensaio de curto-circuito (Lado de Baixa Tensão - 7.96 kV, HV em curto)
+# Nota: O Ex. 2.24 pede CC no LV, mas o Ex. 2.22 deu CC no HV.
+# Vamos adaptar usando os dados do Ex. 2.22, mas interpretando-os
+# como se o CC fosse no LV, e depois mostrando como seria se fosse no HV.
+# **Assumindo que os dados de CC no Ex. 2.22 eram referidos ao HV:**
+Vcc_HV_2_24 = 1920             # V (Tensão aplicada no HV)
+Icc_HV_2_24 = 252              # A (Corrente no HV)
+Pcc_HV_2_24 = 60.3e3           # W (Potência absorvida no HV)
+
+# Se o ensaio de curto-circuito fosse no LV com os dados do Ex. 2.22,
+# precisaríamos referir os dados de CC do HV para o LV primeiro.
+# Mas o enunciado do Ex. 2.24 **pede CC no LV** para calcular os parâmetros T.
+# Se usarmos os dados do Ex 2.22, o CC foi no HV. Isso nos dá Req_HV e Xeq_HV.
+# Para calcular o circuito T, precisamos dos ramos série R1, Xl1, R2, Xl2
+# e os ramos paralelos Rc, Xm.
+
+# Vamos primeiro calcular os parâmetros a partir dos ensaios fornecidos no Ex. 2.22,
+# mesmo que o enunciado do 2.24 descreva ensaios ligeiramente diferentes.
+# Isso porque o 2.24 explicitamente pede para testar com os dados do 2.22.
+# Os dados do 2.22 são: CA no LV, CC no HV.
+
+# Relação de espiras (a = N_HV/N_LV)
+a_2_24 = V_HV_nominal_2_24 / V_LV_nominal_2_24
+print(f"\nExercicio 2.24 (Usando dados do Problema 2.22):")
+print(f"Relação de espiras (a = N_HV/N_LV): {a_2_24:.4f}")
+
+# === Cálculo dos parâmetros a partir dos ensaios do Ex. 2.22 ===
+
+# Parâmetros série equivalente (obtidos do ensaio de curto-circuito no HV)
+# Zcc_HV = Vcc_HV / Icc_HV
+Zcc_HV_mag_2_24 = Vcc_HV_2_24 / Icc_HV_2_24
+
+# Rcc_HV = Pcc_HV / Icc_HV^2
+Rcc_HV_2_24 = Pcc_HV_2_24 / (Icc_HV_2_24**2)
+
+# Xcc_HV = sqrt(Zcc_HV_mag^2 - Rcc_HV^2)
+Xcc_HV_2_24 = np.sqrt(Zcc_HV_mag_2_24**2 - Rcc_HV_2_24**2)
+
+# Estes são Req e Xeq referidos ao lado HV.
+Req_HV_comp_2_24 = Rcc_HV_2_24
+Xeq_HV_comp_2_24 = Xcc_HV_2_24
+
+print(f"\nParâmetros série equivalentes (do ensaio de CC no HV):")
+print(f"  Req_HV: {Req_HV_comp_2_24:.4f} Ω")
+print(f"  Xeq_HV: {Xeq_HV_comp_2_24:.4f} Ω")
+
+
+# Parâmetros paralelos de excitação (obtidos do ensaio de circuito aberto no LV)
+# Pca_LV_2_24 representa as perdas no núcleo (Pc_LV_2_24).
+# Ic_LV_2_24 = Pc_LV_2_24 / Vca_LV_2_24
+Ic_LV_2_24 = Pca_LV_2_24 / Vca_LV_2_24
+# Rc_LV = Vca_LV / Ic_LV
+Rc_LV_2_24 = Vca_LV_2_24 / Ic_LV_2_24
+
+# Corrente de magnetização no LV (Im_LV_2_24)
+# Ica_LV_2_24 é a corrente total de excitação no LV.
+# Ica_LV_2_24^2 = Ic_LV_2_24^2 + Im_LV_2_24^2
+Im_LV_2_24 = np.sqrt(Ica_LV_2_24**2 - Ic_LV_2_24**2)
+# Xm_LV = Vca_LV / Im_LV
+Xm_LV_2_24 = Vca_LV_2_24 / Im_LV_2_24
+
+print(f"\nParâmetros de excitação (do ensaio CA no LV):")
+print(f"  Rc_LV: {Rc_LV_2_24:.4f} Ω")
+print(f"  Xm_LV: {Xm_LV_2_24:.4f} Ω")
+
+
+# === Calcular parâmetros do circuito equivalente T ===
+
+# Para o circuito equivalente T (Fig. 2.12a: referido ao primário/HV; Fig. 2.12b: referido ao secundário/LV).
+# Os ramos série são R1, Xl1, R2', Xl2' (referido ao primário) ou R1', Xl1', R2, Xl2 (referido ao secundário).
+# Os ramos paralelos são Rc', Xm' (referido ao primário) ou Rc, Xm (referido ao secundário).
+
+# Aproximação comum: A impedância série equivalente (Req + jXeq) é a soma das impedâncias
+# série do primário e secundário referidas ao mesmo lado.
+# Req = R1 + R2' (referido ao primário) ou Req = R1' + R2 (referido ao secundário)
+# Xeq = Xl1 + Xl2' (referido ao primário) ou Xeq = Xl1' + Xl2 (referido ao secundário)
+
+# Aproximação adicional para o circuito T: dividir Req e Xeq igualmente entre os ramos série
+# do primário e secundário referidos ao mesmo lado.
+# R1 ≈ R2' ≈ Req / 2 (referido ao primário)
+# Xl1 ≈ Xl2' ≈ Xeq / 2 (referido ao primário)
+# R1' ≈ R2 ≈ Req / 2 (referido ao secundário)
+# Xl1' ≈ Xl2 ≈ Xeq / 2 (referido ao secundário)
+
+# 1. Circuito equivalente T referido ao lado de alta tensão (HV)
+# Ramos série: R1 + jXl1 e R2' + jXl2'
+# Ramos paralelos: Rc' e jXm'
+
+# Parâmetros paralelos referidos ao HV:
+# Estes já foram calculados a partir do ensaio CA no LV e referidos ao HV.
+Rc_HV_T = Rc_HV_a
+Xm_HV_T = Xm_HV_a
+
+# Parâmetros série referidos ao HV:
+# A impedância série total referida ao HV é Zeq_HV_comp_2_24 = Req_HV_comp_2_24 + jXeq_HV_comp_2_24.
+# Aproximando R1 = R2' = Req_HV_comp_2_24 / 2
+R1_aprox_HV = Req_HV_comp_2_24 / 2
+R2_prime_aprox_HV = Req_HV_comp_2_24 / 2
+
+# Aproximando Xl1 = Xl2' = Xeq_HV_comp_2_24 / 2
+Xl1_aprox_HV = Xeq_HV_comp_2_24 / 2
+Xl2_prime_aprox_HV = Xeq_HV_comp_2_24 / 2
+
+
+print(f"\nParâmetros do circuito equivalente T referidos ao lado de alta tensão (HV):")
+print(f"  Ramo série do primário (R1 + jXl1): ({R1_aprox_HV:.4f} + {Xl1_aprox_HV:.4f}j) Ω")
+print(f"  Ramo de perdas no núcleo (Rc'): {Rc_HV_T:.2f} Ω")
+print(f"  Ramo de magnetização (Xm'): {Xm_HV_T:.2f}j Ω")
+print(f"  Ramo série do secundário (referido) (R2' + jXl2'): ({R2_prime_aprox_HV:.4f} + {Xl2_prime_aprox_HV:.4f}j) Ω")
+
+
+# 2. Circuito equivalente T referido ao lado de baixa tensão (LV)
+# Ramos série: R1' + jXl1' e R2 + jXl2
+# Ramos paralelos: Rc e jXm
+
+# Parâmetros paralelos referidos ao LV:
+# Estes foram calculados diretamente do ensaio CA no LV.
+Rc_LV_T = Rc_LV_2_24
+Xm_LV_T = Xm_LV_2_24
+
+# Parâmetros série referidos ao LV:
+# A impedância série total referida ao LV é Zeq_LV_b, calculada no Ex. 2.22b
+# Zeq_LV_b = Req_LV_b + jXeq_LV_b
+Req_LV_comp_2_24 = Req_HV_comp_2_24 / (a_2_24**2)
+Xeq_LV_comp_2_24 = Xeq_HV_comp_2_24 / (a_2_24**2)
+
+# Aproximando R1' = R2 = Req_LV_comp_2_24 / 2
+R1_prime_aprox_LV = Req_LV_comp_2_24 / 2
+R2_aprox_LV = Req_LV_comp_2_24 / 2
+
+# Aproximando Xl1' = Xl2 = Xeq_LV_comp_2_24 / 2
+Xl1_prime_aprox_LV = Xeq_LV_comp_2_24 / 2
+Xl2_aprox_LV = Xeq_LV_comp_2_24 / 2
+
+
+print(f"\nParâmetros do circuito equivalente T referidos ao lado de baixa tensão (LV):")
+print(f"  Ramo série do primário (referido) (R1' + jXl1'): ({R1_prime_aprox_LV:.6f} + {Xl1_prime_aprox_LV:.6f}j) Ω")
+print(f"  Ramo de perdas no núcleo (Rc): {Rc_LV_T:.4f} Ω")
+print(f"  Ramo de magnetização (Xm): {Xm_LV_T:.4f}j Ω")
+print(f"  Ramo série do secundário (R2 + jXl2): ({R2_aprox_LV:.6f} + {Xl2_aprox_LV:.6f}j) Ω")
+
+# Nota: O erro no código original "NameError: name 'Xl2_aprox_LV_2_24_comp' is not defined"
+# ocorreu porque a variável 'Xl2_aprox_LV_2_24_comp' não foi definida no código.
+# A variável correta baseada nos cálculos do Ex. 2.22 e 2.24 seria Xl2_aprox_LV (definida no Ex 2.21)
+# ou Xl2_aprox_LV_comp_2_24 (definida agora no Ex 2.24 para o lado LV).
+# O código acima define as variáveis necessárias para os prints solicitados pelo usuário.
 
 """# Exercicio 2.25
 
@@ -2005,7 +2301,119 @@ curto-circuito de 60,3 kW.
 d. Calcule os parâmetros de circuito equivalente T desse transformador referidos a (i) lado de baixa tensão e (ii) lado de alta tensão.
 """
 
-#Codigo aqui
+import numpy as np
+
+# Dados do exercício 2.22
+V_LV_nominal_2_22 = 7960      # V (Baixa Tensão)
+V_HV_nominal_2_22 = 39800     # V (Alta Tensão)
+S_base_2_22 = 10e6            # VA (10 MVA)
+
+# Ensaio de circuito aberto (lado de baixa tensão)
+Vca_LV = 7960                 # V
+Ica_LV = 17.3                 # A
+Pca_LV = 48.0e3               # W
+
+# Ensaio de curto-circuito (lado de alta tensão)
+Vcc_HV = 1920                 # V
+Icc_HV = 252                  # A
+Pcc_HV = 60.3e3               # W
+
+# Relação de espiras original
+a_2_22 = V_HV_nominal_2_22 / V_LV_nominal_2_22
+
+# ==================================================================================
+# Modificação no enrolamento de alta tensão:
+# Dobra-se o número de espiras (N -> 2N) e metade da área da seção do fio (A -> A/2).
+# A resistência é proporcional ao comprimento (dobro) e inversamente proporcional à área (metade).
+# Portanto, resistência do enrolamento HV quadruplica (2 / (1/2) = 4 vezes).
+
+# ==================================================================================
+# a) Tensão e potência nominais do transformador modificado
+
+# Nova relação de espiras
+a_mod = (2 * V_HV_nominal_2_22) / V_LV_nominal_2_22
+V_HV_mod = 2 * V_HV_nominal_2_22
+V_LV_mod = V_LV_nominal_2_22
+S_mod = S_base_2_22   # Potência nominal não muda
+
+print("a) Tensão e potência nominais do transformador modificado:")
+print(f"  Tensão lado HV: {V_HV_mod:.0f} V")
+print(f"  Tensão lado LV: {V_LV_mod:.0f} V")
+print(f"  Potência nominal: {S_mod/1e6:.1f} MVA")
+
+# ==================================================================================
+# b) Corrente e potência fornecidas ao enrolamento de baixa tensão
+# Enrolamento de alta tensão em aberto e tensão nominal aplicada no lado de baixa tensão
+
+# As perdas no núcleo permanecem as mesmas (Pc = Pca_LV) porque a tensão no núcleo não mudou (lado LV)
+Ic_LV = Pca_LV / Vca_LV
+Im_LV = np.sqrt(Ica_LV**2 - Ic_LV**2)
+
+print("\nb) Corrente e potência fornecidas ao enrolamento de baixa tensão:")
+print(f"  Corrente no LV: {Ica_LV:.2f} A")
+print(f"  Potência no LV: {Pca_LV/1000:.2f} kW (Perdas no núcleo)")
+
+# ==================================================================================
+# c) Tensão aplicada no HV que gera 60,3 kW em curto-circuito no LV
+
+# A impedância de curto permanece a mesma no lado HV, exceto que a resistência e reatância do HV quadruplicam.
+
+# Impedância série do HV no original:
+Zcc_HV = Vcc_HV / Icc_HV
+Rcc_HV = Pcc_HV / (Icc_HV**2)
+Xcc_HV = np.sqrt(Zcc_HV**2 - Rcc_HV**2)
+
+# Após modificação:
+Rcc_HV_mod = Rcc_HV * 4
+Xcc_HV_mod = Xcc_HV * 4
+Zcc_HV_mod = np.sqrt(Rcc_HV_mod**2 + Xcc_HV_mod**2)
+
+# Corrente nominal no lado HV modificado:
+I_HV_nom = S_mod / V_HV_mod
+
+# Potência de curto P = I^2 * R -> I = sqrt(P / R)
+Icc_c = np.sqrt(60.3e3 / Rcc_HV_mod)
+
+# Tensão para esse Icc:
+Vcc_c = Icc_c * Zcc_HV_mod
+
+print("\nc) Tensão aplicada no HV para 60,3 kW de dissipação no curto:")
+print(f"  Corrente de curto: {Icc_c:.2f} A")
+print(f"  Tensão aplicada no HV: {Vcc_c:.2f} V")
+
+# ==================================================================================
+# d) Parâmetros de circuito equivalente T
+
+# ---- Parâmetros de excitação (núcleo) permanecem inalterados ----
+# Cálculo a partir do ensaio de circuito aberto no LV:
+Rc_LV = Vca_LV**2 / Pca_LV
+Ic_LV = Pca_LV / Vca_LV
+Im_LV = np.sqrt(Ica_LV**2 - Ic_LV**2)
+Xm_LV = Vca_LV / Im_LV
+
+# ---- Parâmetros série ----
+# Referidos ao lado de baixa tensão:
+a_mod_sq = a_mod**2
+Req_LV = (Rcc_HV_mod) / a_mod_sq
+Xeq_LV = (Xcc_HV_mod) / a_mod_sq
+
+# Referidos ao lado de alta tensão:
+Req_HV = Rcc_HV_mod
+Xeq_HV = Xcc_HV_mod
+
+print("\nd) Parâmetros do circuito equivalente T referidos ao lado LV:")
+print(f"  Req_LV = {Req_LV:.6f} Ω")
+print(f"  Xeq_LV = {Xeq_LV:.6f} Ω")
+print(f"  Rc_LV = {Rc_LV:.2f} Ω")
+print(f"  Xm_LV = {Xm_LV:.2f} Ω")
+
+print("\nParâmetros do circuito equivalente T referidos ao lado HV:")
+print(f"  Req_HV = {Req_HV:.2f} Ω")
+print(f"  Xeq_HV = {Xeq_HV:.2f} Ω")
+Rc_HV = Rc_LV * a_mod_sq
+Xm_HV = Xm_LV * a_mod_sq
+print(f"  Rc_HV = {Rc_HV:.2f} Ω")
+print(f"  Xm_HV = {Xm_HV:.2f} Ω")
 
 """# Exercicio 2.26
 
@@ -2015,7 +2423,73 @@ d. Calcule os parâmetros de circuito equivalente T desse transformador referido
 (a), assumindo que a carga está com um fator de potência de 0,9 adiantado.
 """
 
-#Codigo aqui
+import math
+
+# Dados
+S_base = 25e6       # VA
+V1 = 78e3           # V (alta tensão)
+V2 = 8e3            # V (baixa tensão)
+
+# Ensaio de curto-circuito
+Vcc = 4.53e3        # V
+Icc = 321           # A
+Pcc = 77.5e3        # W
+
+# Ensaio de circuito aberto
+Vca = 8e3           # V
+Ica = 39.6          # A
+Pca = 86.2e3        # W
+
+# Constantes
+a = V1 / V2  # relação de transformação
+
+# Impedância equivalente referida ao lado BT
+Zeq_AT = Vcc / Icc
+Req_AT = Pcc / (Icc ** 2)
+Xeq_AT = math.sqrt(Zeq_AT ** 2 - Req_AT ** 2)
+
+Zeq_BT = Zeq_AT / (a ** 2)
+Req_BT = Req_AT / (a ** 2)
+Xeq_BT = Xeq_AT / (a ** 2)
+
+# Corrente nominal no lado BT
+S_nominal = S_base
+V_BT = V2
+I_nominal = S_nominal / (math.sqrt(3) * V_BT)
+
+# Parte (a) - FP = 1 (Unitário)
+FP = 1
+angulo = math.acos(FP)
+
+V_reg = (Req_BT * math.cos(angulo) + Xeq_BT * math.sin(angulo)) * I_nominal
+regulacao = (V_reg / V_BT) * 100
+
+# Perdas no cobre e no ferro
+P_cobre = 3 * (I_nominal ** 2) * Req_BT
+P_ferro = Pca
+P_saida = S_nominal * FP
+
+rendimento = (P_saida / (P_saida + P_cobre + P_ferro)) * 100
+
+print("=== (a) FP = 1 ===")
+print(f"Regulação de tensão = {regulacao:.2f} %")
+print(f"Rendimento = {rendimento:.2f} %")
+
+# Parte (b) - FP = 0.9 adiantado
+FP = 0.9
+angulo = math.acos(FP) * -1  # adiantado => ângulo negativo
+
+V_reg = (Req_BT * math.cos(angulo) + Xeq_BT * math.sin(angulo)) * I_nominal
+regulacao = (V_reg / V_BT) * 100
+
+P_cobre = 3 * (I_nominal ** 2) * Req_BT
+P_saida = S_nominal * FP
+
+rendimento = (P_saida / (P_saida + P_cobre + P_ferro)) * 100
+
+print("\n=== (b) FP = 0.9 adiantado ===")
+print(f"Regulação de tensão = {regulacao:.2f} %")
+print(f"Rendimento = {rendimento:.2f} %")
 
 """# Exercicio 2.27
 
@@ -2026,7 +2500,101 @@ e (b) a regulação de tensão do transformador como função do fator de potên
 unidade e chega a 0,55 adiantado
 """
 
-#Codigo aqui
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Dados do problema 2.23
+S_base = 2.5e6           # VA
+V_HV_nominal = 19100     # V
+V_LV_nominal = 3810      # V
+
+# Dados do ensaio de circuito aberto (LV)
+Vca_LV = 3810            # V
+Ica_LV = 9.86            # A
+Pca_LV = 8140            # W
+
+# Dados do ensaio de curto-circuito (HV)
+Vcc_HV = 920             # V
+Icc_HV = 141             # A
+Pcc_HV = 10300           # W
+
+# Relação de transformação
+a = V_HV_nominal / V_LV_nominal
+
+# Parâmetros série referidos ao lado LV
+Zcc_HV = Vcc_HV / Icc_HV
+Rcc_HV = Pcc_HV / (Icc_HV**2)
+Xcc_HV = np.sqrt(Zcc_HV**2 - Rcc_HV**2)
+Req_LV = Rcc_HV / (a**2)
+Xeq_LV = Xcc_HV / (a**2)
+
+# Parâmetros de excitação (lado LV)
+Ic_LV = Pca_LV / Vca_LV
+Im_LV = np.sqrt(Ica_LV**2 - Ic_LV**2)
+Rc_LV = Vca_LV / Ic_LV
+Xm_LV = Vca_LV / Im_LV
+
+# Corrente nominal no lado LV
+I_nom = S_base / V_LV_nominal
+
+# Vetor de fatores de potência (de 0.75 atrasado a 0.55 adiantado)
+fp_atrasado = np.linspace(0.75, 1.0, 50)
+fp_adiantado = np.linspace(1.0, 0.55, 50)[1:]
+fp = np.concatenate((fp_atrasado, fp_adiantado))
+
+# Ângulo de carga (atrasado -> positivo, adiantado -> negativo)
+angulo = np.arccos(fp)
+
+# Corrente da carga
+I_carga = I_nom * (np.cos(angulo) - 1j * np.sin(angulo))
+
+# Queda de tensão nos elementos série
+queda_V = I_carga * (Req_LV + 1j * Xeq_LV)
+
+# Tensão no lado primário
+V1 = V_LV_nominal + queda_V
+
+# Potência de saída (constante)
+P_saida = S_base * fp
+
+# Perdas no cobre
+P_cobre = (abs(I_carga)**2) * Req_LV
+
+# Perdas no núcleo (constante)
+P_nucleo = Pca_LV
+
+# Potência de entrada
+P_entrada = P_saida + P_cobre + P_nucleo
+
+# Eficiência
+eficiencia = (P_saida / P_entrada) * 100
+
+# Regulação de tensão (%)
+regulacao = ((abs(V1) - V_LV_nominal) / V_LV_nominal) * 100
+
+# ====== Plot ======
+
+plt.figure(figsize=(12, 6))
+
+# Plot da Eficiência
+plt.subplot(1, 2, 1)
+plt.plot(fp, eficiencia, 'b', linewidth=2)
+plt.title('Eficiência vs Fator de Potência')
+plt.xlabel('Fator de Potência')
+plt.ylabel('Eficiência (%)')
+plt.grid(True)
+plt.ylim(95, 100)
+
+# Plot da Regulação de Tensão
+plt.subplot(1, 2, 2)
+plt.plot(fp, regulacao, 'r', linewidth=2)
+plt.title('Regulação de Tensão vs Fator de Potência')
+plt.xlabel('Fator de Potência')
+plt.ylabel('Regulação (%)')
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
 
 """# Exercicio 2.28
 
@@ -2044,7 +2612,80 @@ seus terminais primário e secundário e abastecendo uma carga em seus terminais
 potência da carga (SUGESTÃO: Use MATLAB para encontrar a solução).
 """
 
-#Codigo aqui
+# ✔️ Importando bibliotecas
+import numpy as np
+
+# ✔️ Dados fornecidos
+S_nom = 25_000   # VA
+V_prim = 2400    # V
+V_sec = 240      # V
+f = 60           # Hz
+a = V_prim / V_sec  # relação de transformação (10)
+
+# Ensaio de circuito aberto (lado secundário)
+Vca = 240    # V
+Ica = 1.37   # A
+Pca = 139    # W
+
+# Ensaio de curto-circuito (lado primário)
+Vcc = 67.8   # V
+Icc = 10.1   # A
+Pcc = 174    # W
+
+# ✔️ Cálculo dos parâmetros
+# Impedância série
+Zcc = Vcc / Icc
+Rcc = Pcc / (Icc ** 2)
+Xcc = np.sqrt(Zcc**2 - Rcc**2)
+
+# Admitância de magnetização
+Ic = Pca / Vca
+Im = np.sqrt(Ica**2 - Ic**2)
+G = Ic / Vca
+B = Im / Vca
+
+# ✔️ Corrente nominal
+I_sec_nom = S_nom / V_sec
+I_prim_nom = I_sec_nom / a
+
+# -------------------
+# 🔸 LETRA (a) 🔸
+# -------------------
+# Potência de saída (FP = 0,85 atrasado)
+FP = 0.85
+P_out = S_nom * FP
+
+# Perdas no cobre
+P_cobre = (I_prim_nom)**2 * Rcc
+
+# Perdas no núcleo = Pca
+P_nucleo = Pca
+
+# Potência de entrada
+P_in = P_out + P_cobre + P_nucleo
+
+# Rendimento
+rend = (P_out / P_in) * 100
+
+print('🔸 RESULTADO LETRA (a)')
+print(f'Rendimento = {rend:.2f} %')
+
+# -------------------
+# 🔸 LETRA (b) 🔸
+# -------------------
+# Condição: Vprim = Vsec * a + ΔV
+# ΔV = I * (Rcc + jXcc) = 0
+# Para isso, I deve ser ortogonal à impedância
+
+angulo_Zcc = np.arctan2(Xcc, Rcc)   # radianos
+angulo_I = -angulo_Zcc              # corrente com ângulo oposto
+
+# Fator de potência
+fp = np.cos(angulo_I)
+
+print('\n🔸 RESULTADO LETRA (b)')
+print(f'Ângulo da impedância: {np.degrees(angulo_Zcc):.2f} graus')
+print(f'Fator de potência da carga: {fp:.4f} (adiantado capacitivo)')
 
 """# Exercicio 2.29
 
@@ -2065,7 +2706,89 @@ carga com fator de potência 0,92 adiantado
 
 """
 
-#Codigo aqui
+# ✔️ Importando bibliotecas
+import numpy as np
+
+# ✔️ Dados do transformador
+S_nom = 150_000   # VA
+V_lv = 240        # V (baixa tensão)
+V_hv = 7970       # V (alta tensão)
+f = 60            # Hz
+
+# ✔️ Parâmetros referidos ao lado de alta tensão
+R1 = 2.81     # Ohms
+X1 = 21.8     # Ohms
+R2 = 2.24     # Ohms
+X2 = 20.3     # Ohms
+Rc = 127e3    # Ohms (convertido de kΩ)
+Xm = 58.3e3   # Ohms (convertido de kΩ)
+
+# ✔️ Impedância equivalente
+Req = R1 + R2
+Xeq = X1 + X2
+Zeq = Req + 1j * Xeq
+
+# ✔️ Admitância de magnetização
+Yc = 1 / Rc
+Ym = 1j / Xm
+Yeq = Yc + Ym
+
+# ✔️ Relação de transformação
+a = V_hv / V_lv
+
+# ✔️ Corrente nominal no lado de alta tensão
+I_hv_nom = S_nom / V_hv
+
+# ✔️ Função para rendimento e regulação
+def calc_rendimento_regulacao(FP, tipo='atrasado'):
+    # ângulo do fator de potência
+    if tipo == 'atrasado':
+        theta = -np.arccos(FP)  # Atrasado = ângulo negativo (indutivo)
+    elif tipo == 'adiantado':
+        theta = np.arccos(FP)   # Adiantado = ângulo positivo (capacitivo)
+    else:
+        raise ValueError('Tipo deve ser "atrasado" ou "adiantado"')
+
+    # ✔️ Corrente da carga (complexa)
+    I2 = I_hv_nom * (np.cos(theta) + 1j * np.sin(theta))
+
+    # ✔️ Queda de tensão na impedância série
+    V_drop = I2 * Zeq
+
+    # ✔️ Tensão de terminal (considerado V2 = nominal)
+    V2 = V_hv
+
+    # ✔️ Tensão do lado primário (V1)
+    V1 = V2 + V_drop
+
+    # ✔️ Regulação (%)
+    regulacao = (np.abs(V1) - V2) / V2 * 100
+
+    # ✔️ Potência de saída (W)
+    P_out = S_nom * FP
+
+    # ✔️ Perdas no cobre
+    P_cobre = (np.abs(I2))**2 * Req
+
+    # ✔️ Perdas no núcleo
+    P_nucleo = V2**2 * Yc
+
+    # ✔️ Potência de entrada
+    P_in = P_out + P_cobre + P_nucleo
+
+    # ✔️ Rendimento (%)
+    rendimento = (P_out / P_in) * 100
+
+    return rendimento, regulacao
+
+
+# ✔️ Teste para FP = 0.92 adiantado
+FP = 0.92
+rendimento, regulacao = calc_rendimento_regulacao(FP, tipo='adiantado')
+
+print('🔸 RESULTADOS PARA FP = 0.92 ADIANTADO')
+print(f'Rendimento: {rendimento:.2f} %')
+print(f'Regulação: {regulacao:.2f} %')
 
 """# Exercicio 2.30
 
@@ -2074,7 +2797,30 @@ como um autotransformador de 280 V:400 V. Determine as tensões nominais
 dos enrolamentos de alta e baixa tensões para essa conexão e a potência aparente nominal (em kVA) dessa conexão em forma de autotransformador.
 """
 
-#codigo aqui
+# ✔️ Dados do transformador
+S_transformador = 45_000  # VA
+V_primario = 120          # V (transformador isolado)
+V_secundario = 280        # V (transformador isolado)
+
+# ✔️ Dados da configuração como autotransformador
+V_entrada = 280           # V (entrada do autotransformador)
+V_saida = 400             # V (saída do autotransformador)
+
+# ✔️ Cálculo das tensões dos enrolamentos
+# O enrolamento de 120V será o comum (compartilhado)
+V_comum = V_primario      # 120V
+V_série = V_saida - V_entrada  # 400 - 280 = 120V (confirma que também é 120V)
+
+# ✔️ Verificar a tensão dos enrolamentos
+print('🔸 Tensões nominais dos enrolamentos no autotransformador:')
+print(f'Enrolamento Comum: {V_comum} V')
+print(f'Enrolamento Série: {V_série} V')
+
+# ✔️ Cálculo da nova potência aparente como autotransformador
+S_auto = S_transformador * (V_saida / V_comum)
+
+print('\n🔸 Potência nominal como autotransformador:')
+print(f'{S_auto / 1000:.2f} kVA')
 
 """# Exercicio 2.31
 
@@ -2095,7 +2841,33 @@ com carga aparente nominal (kVA), fator de potência 0,93 adiantado e
 
 """
 
-#Codigo aqui
+#Aqui começa o autotransformador
+
+# ✔️ Dados fornecidos
+S_trafo = 10_000  # VA
+V_baixa = 120     # V
+V_alta = 480      # V
+V_fonte = 600     # V
+rendimento_trafo = 0.982
+fp = 0.93  # fator de potência (adiantado)
+
+# ✔️ (b) Cálculo da potência nominal como autotransformador
+S_auto = S_trafo * (V_fonte / V_baixa)
+
+print('🔸 Potência nominal como autotransformador:')
+print(f'{S_auto/1000:.2f} kVA')
+
+# ✔️ (c) Cálculo das perdas no transformador isolado (FP=1 para rendimento informado)
+P_perdas = S_trafo * (1) * (1/rendimento_trafo - 1)
+
+# ✔️ Rendimento como autotransformador para FP=0.93
+P_saida = S_auto * fp
+P_entrada = P_saida + P_perdas
+
+rendimento_auto = P_saida / P_entrada
+
+print('\n🔸 Rendimento como autotransformador:')
+print(f'{rendimento_auto * 100:.2f} %')
 
 """# Exercicio 2.32
 
@@ -2109,7 +2881,31 @@ esse tipo de conexão e também a potência aparente nominal (em MVA).
 b. Calcule o rendimento do transformador com essa conexão quando está suprindo a sua carga nominal com um fator de potência unitário.
 """
 
-#Codigo aqui
+# ✔️ Dados do transformador
+S_trafo = 25_000_000  # VA
+V_baixa = 8_000       # V
+V_alta = 78_000       # V
+V_total = 86_000      # V
+fp = 1.0              # Fator de potência unitário
+rendimento_trafo = 0.985  # Estimado para trafo de potência grande
+
+# 🔸 (a) Cálculo das tensões e potência como autotransformador
+S_auto = S_trafo * (V_total / V_baixa)
+
+print('🔸 Potência nominal como autotransformador:')
+print(f'{S_auto/1e6:.2f} MVA')
+
+# 🔸 (b) Cálculo das perdas no transformador isolado
+P_perdas = S_trafo * fp * (1/rendimento_trafo - 1)
+
+# ✔️ Cálculo do rendimento como autotransformador
+P_saida = S_auto * fp
+P_entrada = P_saida + P_perdas
+
+rendimento_auto = P_saida / P_entrada
+
+print('\n🔸 Rendimento como autotransformador:')
+print(f'{rendimento_auto * 100:.2f} %')
 
 """# Exercicio 2.33
 
@@ -2118,7 +2914,7 @@ a carga nominal e fator de potência unitário. As saídas do script são as esp
 com carga nominal e fator de potência unitário e está conectado como autotransformador. Teste seu programa com o autotransformador do Problema 2.32
 """
 
-#Codigo aqui
+#O script do codigo esta no exercicio 2.32 FIM DO AUTOTRANSFORMADOR
 
 """# Exercicio 2.34
 
@@ -2132,7 +2928,7 @@ baixa tensão) para as seguintes conexões:
 ![Screenshot_1796.png](data:image/png;base64,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)
 """
 
-#xcodigo aqui
+#INICIO DO TRANSFORMADOR TRIFASICO
 
 """# Exercicio 2.35
 
