@@ -39,7 +39,7 @@ Exercícios concluídos (95,833% do capítulo):
 
 ### Capítulo 2 - Livro de Exercícios de Fitzgerald
 
-- Exercícios concluídos do **2.1 até 2.33**, correspondendo a **63,45% do capítulo**.
+- Exercícios concluídos do **2.1 até 2.52**, correspondendo a **100% do capítulo**.
 - Estrutura dos exercícios do capítulo 2 do Fitzgerald:
 
   | Exercícios       | Tema                                      |
