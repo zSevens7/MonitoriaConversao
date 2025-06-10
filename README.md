@@ -48,7 +48,7 @@ Exercícios concluídos (95,833% do capítulo):
   | 2.10 a 2.19      | Transformador monofásico                   |
   | 2.20 a 2.29      | Transformador monofásico com ensaios (2.29 requer Matlab/Python) |
   | 2.30 a 2.33      | Autotransformador                          |
-  | 2.34 a 2.52   | Transformadores trifásicos (ainda não feitos) |
+  | 2.34 a 2.52   | Transformadores trifásicos  |
 
 
 ---
