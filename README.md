@@ -9,7 +9,7 @@ Atualmente, o repositório está organizado da seguinte forma:
 * **Transformadores:**
     * Transformadores Monofásicos
     * Transformadores Trifásicos  
-* [Em breve] Motores e Geradores CC
+*  **Motores e Geradores CC**
 
 A maioria dos códigos presentes são soluções para exercícios práticos.
 
@@ -48,11 +48,53 @@ Exercícios concluídos (95,833% do capítulo):
   | 2.10 a 2.19      | Transformador monofásico                   |
   | 2.20 a 2.29      | Transformador monofásico com ensaios (2.29 requer Matlab/Python) |
   | 2.30 a 2.33      | Autotransformador                          |
-  | 2.34 a 2.52   | Transformadores trifásicos  |
+  | 2.34 a 2.52      | Transformadores trifásicos  |
 
 
 ---
 
+### Capítulo 8 - Livro do Chapman
+
+Este capítulo aborda máquinas de corrente contínua, tanto em operação como **geradores** quanto **motores**.
+
+**Status:** Exercícios em estruturação (sem resolução final).
+
+| Exercício | Tipo da Máquina CC | Função   | Feito |
+|-----------|--------------------|----------|--------|
+| 8.1       | Série              | Motor    | ✅     |
+| 8.2       | Série              | Motor    | ❌     |
+| 8.3       | Série              | Motor    | ❌     |
+| 8.4       | Série              | Motor    | ❌     |
+| 8.5       | Série              | Motor    | ❌     |
+| 8.6       | Série              | Motor    | ❌     |
+| 8.7       | Série              | Motor    | ❌     |
+| 8.8       | Série              | Motor    | ❌     |
+| 8.9       | Série              | Motor    | ❌     |
+| 8.10      | Série              | Motor    | ❌     |
+| 8.11      | Série              | Motor    | ❌     |
+| 8.12      | Série              | Motor    | ❌     |
+| 8.13      | Shunt              | Gerador  | ❌     |
+| 8.14      | Shunt              | Gerador  | ❌     |
+| 8.15      | Shunt              | Gerador  | ❌     |
+| 8.16      | Shunt              | Gerador  | ❌     |
+| 8.17      | Shunt              | Gerador  | ❌     |
+| 8.18      | Shunt              | Gerador  | ❌     |
+| 8.19      | Shunt              | Gerador  | ❌     |
+| 8.20      | Composto           | Gerador  | ❌     |
+| 8.21      | Composto           | Gerador  | ❌     |
+| 8.22      | Shunt              | Motor    | ❌     |
+| 8.23      | Shunt              | Motor    | ❌     |
+| 8.24      | Shunt              | Motor    | ❌     |
+| 8.25      | Shunt              | Motor    | ❌     |
+| 8.26      | Shunt              | Motor    | ❌     |
+| 8.27      | Shunt              | Motor    | ❌     |
+| 8.28      | Composto           | Motor    | ❌     |
+| 8.29      | Composto           | Motor    | ❌     |
+| 8.30      | Composto           | Motor    | ❌     |
+
+
+
+---
 ## Provas e temas já disponíveis no repositório:
 
 1. **1ª TVC:** Transformador monofásico e autotransformador  
