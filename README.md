@@ -95,6 +95,15 @@ Este capítulo aborda máquinas de corrente contínua, tanto em operação como 
 
 
 ---
+
+---
+
+## Foi adicionado um arquivo de solução de TVC - 2 - Trifasico
+
+O exercicio é sobre transformador trifasico envolvendo transformação de unidade PU.
+
+---
+
 ## Provas e temas já disponíveis no repositório:
 
 1. **1ª TVC:** Transformador monofásico e autotransformador  
