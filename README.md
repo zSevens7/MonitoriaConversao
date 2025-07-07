@@ -62,14 +62,14 @@ Este capítulo aborda máquinas de corrente contínua, tanto em operação como 
 | Exercício | Tipo da Máquina CC | Função   | Feito |
 |-----------|--------------------|----------|--------|
 | 8.1       | Série              | Motor    | ✅     |
-| 8.2       | Série              | Motor    | ❌     |
-| 8.3       | Série              | Motor    | ❌     |
-| 8.4       | Série              | Motor    | ❌     |
-| 8.5       | Série              | Motor    | ❌     |
-| 8.6       | Série              | Motor    | ❌     |
-| 8.7       | Série              | Motor    | ❌     |
-| 8.8       | Série              | Motor    | ❌     |
-| 8.9       | Série              | Motor    | ❌     |
+| 8.2       | Série              | Motor    | ✅     |
+| 8.3       | Série              | Motor    | ✅     |
+| 8.4       | Série              | Motor    | ✅     |
+| 8.5       | Série              | Motor    | ✅     |
+| 8.6       | Série              | Motor    | ✅     |
+| 8.7       | Série              | Motor    | ✅     |
+| 8.8       | Série              | Motor    | ✅     |
+| 8.9       | Série              | Motor    | ✅     |
 | 8.10      | Série              | Motor    | ❌     |
 | 8.11      | Série              | Motor    | ❌     |
 | 8.12      | Série              | Motor    | ❌     |
