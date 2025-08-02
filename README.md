@@ -91,15 +91,19 @@ Este capítulo aborda máquinas de corrente contínua, tanto em operação como 
 
 ---
 
-## Arquivos adicionais
+## 📂 Arquivos Adicionais
 
-Foi adicionado um arquivo de solução de TVC - 2 - Trifásico.  
-O exercício é sobre transformador trifásico envolvendo transformação de unidade PU.
+- **TVC - 2: Transformador Trifásico**  
+  Arquivo contendo solução para exercício envolvendo transformação de unidade PU em transformadores trifásicos.
 
-Foi adicionado um arquivo de solução do TVC - 3 - Maquina CC de 2021/3
-Exercicio fala sobre Geradores CC composto aditivo longo; Motor CC série e outras análises relacionadas.
+- **TVC - 3: Máquina CC (2021/3)**  
+  Solução do exercício que aborda:  
+  🔹 Geradores CC composto aditivo longo  
+  🔹 Motor CC série  
+  🔹 Outras análises relacionadas a máquinas de corrente contínua
 
 ---
+
 
 ## Provas e temas já disponíveis no repositório:
 
